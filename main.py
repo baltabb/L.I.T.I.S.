@@ -1,108 +1,142 @@
 import streamlit as st
 import time
 
-# 1. Configuración inicial
-st.set_page_config(page_title="L.I.T.I.S. - Acceso Ejecutivo", layout="centered")
+# Configuración de página
+st.set_page_config(page_title="L.I.T.I.S.", layout="centered")
 
-# 2. Inyección de CSS Cristal Zafiro Elegante
+# Inyección de CSS (Clon exacto de la foto Cristal Zafiro)
 st.markdown("""
 <style>
-    /* Fondo principal nocturno */
+    /* Fondo radial azul noche exacto al de la foto */
     .stApp {
-        background-color: #0d1117;
-        color: #c9d1d9;
-        font-family: 'Courier New', Courier, monospace;
+        background: radial-gradient(circle at center, #1e293b 0%, #0a0f18 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* Panel de Vidrio Esmerilado (Cristal Zafiro) */
-    .zafiro-card {
-        background: rgba(255, 255, 255, 0.02);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(88, 166, 255, 0.25);
+    /* Ocultar elementos por defecto de Streamlit para mayor limpieza */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Contenedor principal de cristal esmerilado */
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(138, 180, 248, 0.2);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         border-radius: 12px;
-        padding: 40px 30px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        max-width: 400px;
-        margin: 10vh auto 0 auto;
+        padding: 50px 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        text-align: center;
+        max-width: 380px;
+        margin: 5vh auto;
     }
 
-    /* Animación de Carga Minimalista (Anillo Zafiro) */
-    .loader {
-        border: 3px solid rgba(88, 166, 255, 0.1);
-        border-top: 3px solid #58a6ff;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
+    /* Tipografía del título L.I.T.I.S. */
+    .title-litis {
+        color: #8ab4f8;
+        font-size: 46px;
+        font-weight: 300;
+        letter-spacing: 6px;
+        margin-bottom: 5px;
+        text-shadow: 0 0 15px rgba(138, 180, 248, 0.5);
     }
-    
+
+    /* Subtítulo SIMULADOR LEGAL */
+    .subtitle-litis {
+        color: #9aa0a6;
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 35px;
+    }
+
+    /* Animación del aro central luminoso */
+    .loader-ring {
+        width: 70px;
+        height: 70px;
+        border: 3px solid rgba(138, 180, 248, 0.1);
+        border-top: 3px solid #8ab4f8;
+        border-radius: 50%;
+        animation: spin 1.2s linear infinite;
+        margin: 0 auto 35px auto;
+        box-shadow: 0 0 20px rgba(138, 180, 248, 0.15);
+    }
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 
-    /* Estilo de los campos de texto */
-    input {
-        background-color: #0d1117 !important;
-        color: #58a6ff !important;
-        border: 1px solid rgba(88, 166, 255, 0.3) !important;
+    /* Cajas de texto (Usuario / Contraseña) */
+    div[data-testid="stTextInput"] input {
+        background-color: transparent !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #e8eaed !important;
         border-radius: 6px !important;
+        padding: 12px 15px !important;
+        font-size: 14px !important;
     }
 
-    /* Botón ejecutivo */
-    .stButton>button {
-        background-color: #0d1117;
-        color: #58a6ff;
-        border: 1px solid #58a6ff;
-        border-radius: 6px;
-        font-weight: bold;
-        letter-spacing: 1px;
-        width: 100%;
-        transition: all 0.3s ease;
-        margin-top: 15px;
+    div[data-testid="stTextInput"] input:focus {
+        border-color: #8ab4f8 !important;
+        box-shadow: 0 0 8px rgba(138, 180, 248, 0.3) !important;
     }
-    .stButton>button:hover {
-        background-color: #58a6ff;
-        color: #0d1117;
-        box-shadow: 0 0 15px rgba(88,166,255,0.4);
+
+    /* Botón de Iniciar Sesión */
+    div[data-testid="stButton"] button {
+        background-color: transparent !important;
+        color: #8ab4f8 !important;
+        border: 1px solid rgba(138, 180, 248, 0.5) !important;
+        border-radius: 6px !important;
+        width: 100% !important;
+        font-weight: 400 !important;
+        letter-spacing: 1px !important;
+        margin-top: 15px !important;
+        padding: 10px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    div[data-testid="stButton"] button:hover {
+        background-color: rgba(138, 180, 248, 0.1) !important;
+        box-shadow: 0 0 15px rgba(138, 180, 248, 0.4) !important;
+        border-color: #8ab4f8 !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Control de Estado
-if "acceso" not in st.session_state: st.session_state.acceso = False
-if "cargando" not in st.session_state: st.session_state.cargando = False
+# Lógica y Memoria de la sesión
+if "acceso" not in st.session_state:
+    st.session_state.acceso = False
+if "cargando" not in st.session_state:
+    st.session_state.cargando = False
 
-# 4. PANTALLA 1: Inicio de Sesión
+# Pantalla 1: Acceso (Clon de la foto)
 if not st.session_state.acceso:
-    st.markdown("<div class='zafiro-card'>", unsafe_allow_html=True)
-    st.markdown("<h1 style='color:#58a6ff; text-align:center; text-shadow: 0 0 10px rgba(88,166,255,0.3);'>L.I.T.I.S.</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#8b949e; font-size: 13px;'>ENTORNO DE SIMULACIÓN JUDICIAL</p>", unsafe_allow_html=True)
-    st.markdown("<hr style='border-color: rgba(88,166,255,0.3);'>", unsafe_allow_html=True)
-    
-    # Lógica de transición animada
+    # Contenedor visual
+    st.markdown("<div class='glass-panel'>", unsafe_allow_html=True)
+    st.markdown("<div class='title-litis'>L.I.T.I.S.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle-litis'>SIMULADOR LEGAL</div>", unsafe_allow_html=True)
+    st.markdown("<div class='loader-ring'></div>", unsafe_allow_html=True)
+
     if st.session_state.cargando:
-        st.markdown("<div class='loader'></div>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#58a6ff; font-size: 12px;'>Estableciendo conexión encriptada...</p>", unsafe_allow_html=True)
-        time.sleep(2) # Pausa de 2 segundos para mostrar la animación
+        st.markdown("<p style='color:#8ab4f8; font-size:12px; margin-top:10px; letter-spacing:1px;'>Autenticando...</p>", unsafe_allow_html=True)
+        time.sleep(1.5)
         st.session_state.cargando = False
         st.session_state.acceso = True
         st.rerun()
     else:
-        u = st.text_input("Usuario", placeholder="Ingrese su ID")
-        p = st.text_input("Contraseña", type="password", placeholder="••••••••")
+        u = st.text_input("Usuario", placeholder="Usuario", label_visibility="collapsed")
+        p = st.text_input("Contraseña", type="password", placeholder="Contraseña", label_visibility="collapsed")
         
-        if st.button("ACCEDER AL ESTRADO"):
+        if st.button("INICIAR SESIÓN"):
             if u == "Baltazar" and p == "Litis2026":
-                st.session_state.cargando = True # Activa la animación
+                st.session_state.cargando = True
                 st.rerun()
             else:
-                st.error("Credenciales inválidas. Acceso denegado.")
-                
+                st.error("Credenciales incorrectas")
+    
     st.markdown("</div>", unsafe_allow_html=True)
 
-# 5. Espacio de transición a la Siguiente Pantalla
 else:
-    st.success("¡Transición exitosa! El código de la Pantalla 2 se insertará aquí.")
+    # Aquí insertaremos la Pantalla 2
+    st.success("¡Acceso validado! (Espacio reservado para la Pantalla 2)")

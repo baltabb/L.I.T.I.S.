@@ -1,219 +1,56 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>L.I.T.I.S. - Acceso y Archivero</title>
-    <style>
-        /* Tipografía clásica de máquina de escribir y fondo oscuro forense */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0e17; 
-            color: #d1d5db;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+import streamlit as st
 
-        /* ----- PANTALLA 1: ACCESO ZAFIRO ----- */
-        #pantallaLogin {
-            position: absolute;
-            z-index: 10;
-            transition: all 1s ease-in-out;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            background-color: #0a0e17; 
-        }
+# 1. Configuración de página obligatoria al inicio
+st.set_page_config(page_title="L.I.T.I.S.", layout="centered")
 
-        .zafiro-panel {
-            background: rgba(16, 32, 64, 0.4);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(88, 166, 255, 0.25);
-            border-radius: 12px;
-            padding: 40px;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            position: relative;
-        }
+# 2. CSS Súper Limpio y Estable
+st.markdown("""
+<style>
+    .stApp { background-color: #0d1117; color: #c9d1d9; }
+    
+    .titulo-litis { 
+        text-align: center; color: #58a6ff; font-family: 'Courier New', Courier, monospace; 
+        font-size: 55px; font-weight: bold; text-shadow: 0 0 15px rgba(88,166,255,0.6); 
+        margin-top: 20px; margin-bottom: 0px; 
+    }
+    
+    .subtitulo { 
+        text-align: center; color: #8b949e; letter-spacing: 4px; font-size: 14px; 
+        margin-bottom: 40px; 
+    }
+    
+    /* Forzar fondo oscuro en los recuadros de texto */
+    div[data-testid="stTextInput"] > div > div > input {
+        background-color: #161b22 !important; color: #58a6ff !important; 
+        border: 1px solid #30363d !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-        h1 { color: #58a6ff; letter-spacing: 3px; margin-bottom: 5px; }
-        p { font-size: 14px; margin-bottom: 25px; color: #8b949e; }
+# 3. Memoria Segura
+if "acceso_permitido" not in st.session_state:
+    st.session_state.acceso_permitido = False
 
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            border-radius: 4px;
-            outline: none;
-        }
-        input:focus { border-color: #58a6ff; }
-
-        button {
-            background-color: #1f6feb;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-        button:hover { background-color: #58a6ff; }
-
-        #mensajeError { color: #ff7b72; margin-top: 15px; display: none; font-weight: bold; }
-
-        /* Animación Biométrica */
-        .escaner-biometrico {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            border: 4px solid transparent;
-            border-top: 4px solid #58a6ff;
-            border-bottom: 4px solid #58a6ff;
-            border-radius: 50%;
-            display: none;
-            animation: girar 1s linear infinite;
-            box-shadow: 0 0 20px rgba(88, 166, 255, 0.8);
-        }
-
-        @keyframes girar {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        /* Efecto de apertura de puertas */
-        .abrir-puertas {
-            transform: scale(1.5);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* ----- PANTALLA 2: ARCHIVERO ----- */
-        #pantallaArchivero {
-            position: absolute;
-            opacity: 0;
-            z-index: 5;
-            transition: opacity 1s ease-in-out;
-            width: 80%;
-            height: 80%;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 30px;
-            display: none;
-            flex-direction: column;
-        }
-
-        .barra-superior {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .buscador {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            padding: 8px;
-            color: #8b949e;
-            width: 300px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .tarjeta-expediente {
-            background: #f0e6d2; /* Color crema amarillento */
-            color: #000;
-            padding: 20px;
-            border-radius: 4px;
-            width: 300px;
-            border-left: 5px solid #d73a49; /* Tinta roja */
-            cursor: pointer;
-        }
+# 4. Pantalla 1: Formulario de Acceso Blindado
+if not st.session_state.acceso_permitido:
+    st.markdown("<p class='titulo-litis'>L.I.T.I.S.</p>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitulo'>SIMULADOR JUDICIAL DE ÉLITE</p>", unsafe_allow_html=True)
+    
+    # El formulario evita que Streamlit se congele al escribir
+    with st.form("formulario_acceso", clear_on_submit=False):
+        usuario = st.text_input("Usuario")
+        clave = st.text_input("Contraseña", type="password")
         
-        .tarjeta-expediente h3 { margin: 0 0 10px 0; font-family: sans-serif;}
-        .tarjeta-expediente p { color: #333; margin: 0;}
-    </style>
-</head>
-<body>
-
-    <!-- PANTALLA 1: LOGIN -->
-    <div id="pantallaLogin">
-        <div class="zafiro-panel" id="panelCentral">
-            <h1>L.I.T.I.S.</h1>
-            <p>Sistema de Simulación Legal</p>
-            
-            <input type="text" id="usuario" placeholder="Usuario">
-            <input type="password" id="clave" placeholder="Contraseña">
-            
-            <button onclick="iniciarSesion()">INGRESAR</button>
-            <p id="mensajeError">Acceso denegado. Credenciales inválidas.</p>
-        </div>
-        <div class="escaner-biometrico" id="escaner"></div>
-    </div>
-
-    <!-- PANTALLA 2: ARCHIVERO -->
-    <div id="pantallaArchivero">
-        <div class="barra-superior">
-            <h2>Archivero Principal - Usuario: Baltazar</h2>
-            <input type="text" class="buscador" value="Buscar por expediente, testigo..." readonly>
-        </div>
+        # Botón nativo de submit
+        ingresar = st.form_submit_button("INICIAR SESIÓN")
         
-        <h3>Expedientes Disponibles</h3>
-        <div class="tarjeta-expediente" onclick="abrirCaso()">
-            <h3>Caso Nº1: Entradas en falso</h3>
-            <p>Testigo: Emilia Martínez</p>
-            <p>Estado: Listo para ingesta RAG</p>
-        </div>
-    </div>
+        if ingresar:
+            if usuario == "Baltazar" and clave == "Litis2026":
+                st.session_state.acceso_permitido = True
+                st.rerun()
+            else:
+                st.error("Credenciales incorrectas. Verifique su usuario y contraseña.")
 
-    <script>
-        function iniciarSesion() {
-            var user = document.getElementById("usuario").value;
-            var pass = document.getElementById("clave").value;
-
-            if (user === "Baltazar" && pass === "Litis2026") {
-                document.getElementById("mensajeError").style.display = "none";
-                document.getElementById("panelCentral").style.opacity = "0";
-                document.getElementById("escaner").style.display = "block";
-                
-                // Simula 1.5 segundos de escaneo antes de abrir
-                setTimeout(function() {
-                    document.getElementById("pantallaLogin").classList.add("abrir-puertas");
-                    document.getElementById("pantallaArchivero").style.display = "flex";
-                    setTimeout(function() {
-                        document.getElementById("pantallaArchivero").style.opacity = "1";
-                    }, 100);
-                }, 1500);
-
-            } else {
-                document.getElementById("mensajeError").style.display = "block";
-            }
-        }
-
-        function abrirCaso() {
-            alert("Iniciando motor RAG... Abriendo lienzo de interrogatorio.");
-            // Aquí enlazaremos con la siguiente etapa
-        }
-    </script>
-
-</body>
-</html>
+# 5. Transición Segura
+else:
+    st.success("¡Acceso concedido! El motor funciona perfectamente. Listo para Pantalla 2.")
